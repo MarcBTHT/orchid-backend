@@ -1,12 +1,13 @@
-import {connect} from './db/connect.js'
-import app from './app.js'
+import { connect } from './db/connect.js';
+import app from './app.js';
 
-// Run the server!
+const port = process.env.PORT || 3001;
+
 try {
-  await connect()
-  await app.listen({ port: 3001 })
+  await connect(); 
+  await app.listen({ port: port });
+  console.log(`Server running on port ${port}`);
 } catch (err) {
-  app.log.error(err)
-  process.exit(1)
+  app.log.error(err);
+  process.exit(1);
 }
-
