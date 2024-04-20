@@ -27,33 +27,25 @@ export function registerRoutes(app) {
 
 
   app.post('/auth/token', async function handler(request, reply) {
-    // On cherche l'utilisateur par son username ou son email
+    // Recherche de l'utilisateur par son username ou son email
     const user = await User.findOne({
-      $or: [
-        { username: request.body.username },
-        { email: request.body.username }
-      ]
+        $or: [
+            { username: request.body.username },
+            { email: request.body.username }
+        ]
     });
-  
+
     if (!user) {
-      return reply.status(401).send({ error: "This user doesn't exist" });
+        return reply.status(401).send({ error: "This user doesn't exist" });
     }
-  
+
     const isSamePassword = await comparePassword(request.body.password, user.password);
     if (!isSamePassword) {
-      return reply.status(401).send({ error: 'Password is incorrect' });
+        return reply.status(401).send({ error: 'Password is incorrect' });
     }
-  
-    // Création du token après validation de l'utilisateur
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-  
+
+    // Confirmer la connexion réussie
     console.log('User connected:', user.email);
-  
-    // Inclure le token dans la réponse
-    return reply.status(200).send({ token, email: user.email });
-  });
+    return reply.status(200).send({ message: "User successfully connected", email: user.email });
+});
 }
